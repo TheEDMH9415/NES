@@ -1,0 +1,99 @@
+/* Fuente retro */
+body {
+    text-align: center;
+    font-family: 'Press Start 2P', cursive;
+    background-color: black;
+    color: white;
+}
+
+/* Marco de pantalla CRT */
+#screen-container {
+    display: inline-block;
+    padding: 10px;
+    border: 10px solid gray;
+    background: radial-gradient(black, #333);
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+/* Scanlines para efecto de TV antigua */
+#scanlines {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.2) 4px
+    );
+    pointer-events: none;
+}
+
+/* Canvas con bordes retro */
+canvas {
+    border: 2px solid white;
+    image-rendering: pixelated;
+    width: 512px;
+    height: 480px;
+    margin-top: 10px;
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* D-Pad */
+.dpad {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.dpad button {
+    width: 50px;
+    height: 50px;
+    font-size: 20px;
+}
+
+/* Botones de acción */
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.buttons button {
+    width: 60px;
+    height: 60px;
+    font-size: 20px;
+    background-color: red;
+}
+
+/* Botones Select & Start */
+.start-select {
+    margin-top: 10px;
+    display: flex;
+    gap: 20px;
+}
+
+.start-select button {
+    width: 80px;
+    height: 40px;
+}
+
+/* Estilos de botones */
+button {
+    background-color: red;
+    border: 2px solid white;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out, background 0.3s;
+}
+
+button:hover {
+    background-color: darkred;
+    transform: scale(1.1);
+}

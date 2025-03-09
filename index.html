@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emulador NES</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Emulador de NES</h1>
+
+    <div id="screen-container">
+        <canvas id="nes-canvas" width="256" height="240"></canvas>
+        <div id="scanlines"></div>
+    </div>
+
+    <div class="controls">
+    <div class="dpad">
+        <button id="btn-up">▲</button><br>
+        <button id="btn-left">◀</button>
+        <button id="btn-right">▶</button><br>
+        <button id="btn-down">▼</button>
+    </div>
+    <div class="ab-buttons">
+        <button id="btn-b">B</button>
+        <button id="btn-a">A</button>
+    </div>
+    <div class="start-select">
+        <button id="btn-select">Select</button>
+        <button id="btn-start">Start</button>
+    </div>
+</div>
+
+    <input type="file" id="rom-loader">
+    <button id="load-rom">Cargar ROM</button>
+
+    <script src="memory.js" defer></script>
+<script src="cpu.js" defer></script>
+<script src="ppu.js" defer></script>
+<script src="mapper.js" defer></script>
+<script src="input.js" defer></script>
+<script src="script.js" defer></script>
+
+</body>
+</html>
