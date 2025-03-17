@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ppu: null,
         running: false,
     };
-
+    
     // Validar el canvas
     if (!NES.canvas) {
         console.error("❌ No se encontró el elemento <canvas>.");
@@ -52,11 +52,26 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Crear instancias en el orden correcto
-    NES.memory = new Memory();
-    NES.ppu = new PPU(NES.memory); // 🔹 Crear la PPU antes de la CPU
-    NES.memory.setPPU(NES.ppu); // 🔹 Conectar la PPU a la memoria
-    NES.cpu = new CPU(NES.memory); // 🔹 Crear la CPU después de la PPU
+// 1. Crear la memoria primero
+NES.memory = new Memory();
+
+// 2. Crear la PPU y pasarle la memoria si lo necesitas (opcional, solo si tu PPU la usa internamente)
+NES.ppu = new PPU();
+
+// 3. Conectar la PPU a la memoria
+NES.memory.setPPU(NES.ppu);
+
+// 4. Crear la CPU (ya conectada a la memoria)
+NES.cpu = new CPU(NES.memory);
+
+// 5. (Opcional) Configurar el Mapper si lo necesitas más adelante
+// NES.mapper = new Mapper();
+// NES.memory.setMapper(NES.mapper);
+
+// 6. Exponer globalmente si lo necesitas
+window.NES = NES;
+
+console.log("✅ NES inicializado completamente.");
 
     if (!NES.memory || !NES.cpu || !NES.ppu) {
         console.error("❌ Error: No se pudo inicializar los componentes.");
@@ -122,10 +137,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    function mainLoop() {
-        if (!NES.running) return;
+   let lastFrameTime = performance.now();
+let framesThisSecond = 0;
+let lastFpsUpdate = performance.now();
+let currentFps = 0;
+let targetFps = 60; // Limitar el emulador a 60 FPS
+let frameDuration = 1000 / targetFps; // Duración de cada frame en milisegundos
 
-        // Aquí iría la ejecución del ciclo del CPU y la actualización del PPU
-        requestAnimationFrame(mainLoop);
+function mainLoop() {
+    if (!NES.running) return;
+
+    const now = performance.now();
+    const deltaTime = now - lastFrameTime;
+
+    if (deltaTime >= frameDuration) {
+        framesThisSecond++;
+        lastFrameTime = now;
+
+        // → Ejecutar CPU y PPU con clocks
+        let cpuCycles = NES.cpu.step(); // Ejecutar una instrucción de CPU
+        for (let i = 0; i < cpuCycles * 3; i++) {
+            NES.ppu.clock(); // 3 ciclos PPU por ciclo CPU
+        }
+
+        // (Opcional) Redibujar el frame si el PPU generó uno
+        if (NES.ppu.frameReady) {
+            NES.ppu.renderFrame(NES.ctx); // o NES.ppu.renderFrame() según tu implementación
+            NES.ppu.frameReady = false;
+        }
+
+        // Actualizar contador FPS
+        if (now > lastFpsUpdate + 1000) {
+            currentFps = framesThisSecond;
+            framesThisSecond = 0;
+            lastFpsUpdate = now;
+            document.getElementById('fpsCounter').innerText = `FPS: ${currentFps}`;
+        }
     }
-});
+
+    requestAnimationFrame(mainLoop);
+}
+
+}); // <- Cierra el DOMContentLoaded correctamente 
